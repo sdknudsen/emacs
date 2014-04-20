@@ -1,0 +1,39 @@
+(add-to-list 'load-path "~/.emacs.d/")
+(require 'cl-lib)
+
+(global-set-key (kbd "C-c forall") '"∀")
+(global-set-key (kbd "C-c exists") '"∃")
+(global-set-key (kbd "C-c not") '"¬")
+(global-set-key (kbd "C-c arr") '"→")
+(global-set-key (kbd "C-c iff") '"↔")
+(global-set-key (kbd "C-c neq") '"≠")
+(global-set-key (kbd "C-c leq") '"⩽")
+(global-set-key (kbd "C-c geq") '"⩾")
+
+(global-set-key (kbd "C-c null") '"ø")
+(global-set-key (kbd "C-c union") '"∪")
+(global-set-key (kbd "C-c intersect") '"∩")
+(global-set-key (kbd "C-c isin") '"∈")
+(global-set-key (kbd "C-c isntin") '"∉")
+(global-set-key (kbd "C-c sub") '"⊆")
+(global-set-key (kbd "C-c propersub") '"⊂")
+
+(global-set-key (kbd "C-c alpha") '"α")
+(global-set-key (kbd "C-c beta") '"β")
+(global-set-key (kbd "C-c delta") '"δ")
+(global-set-key (kbd "C-c epsilon") '"ε")
+(global-set-key (kbd "C-c gamma") '"ɣ")
+
+
+(add-to-list 'load-path "~/.emacs.d/tuareg-mode/")
+(require 'tuareg)
+(require 'ocamldebug)
+;(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+;(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+;(autoload 'tuareg-imenu-set-imenu "tuareg-imenu" 
+;  "Configuration of imenu for tuareg" t) 
+;(add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+;(setq auto-mode-alist 
+;      (append '(("\\.ml[ily]?$" . tuareg-mode)
+;		("\\.topml$" . tuareg-mode))
+;                  auto-mode-alist))
