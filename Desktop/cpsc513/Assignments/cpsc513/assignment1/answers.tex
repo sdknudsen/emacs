@@ -1,0 +1,250 @@
+\documentclass{article}
+
+\usepackage{verbatim}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\lcm}{\mathrm{lcm}}
+
+\begin{document}
+
+\pagestyle{empty}
+
+\title{CPSC 513 - Assignment 1 \\ Tutorial Section 1}
+\author{
+  \begin{minipage}{0.4\textwidth}
+  \begin{flushleft}
+  Isaac Azuelos\\
+  isaac@azuelos.ca\\
+  10019288
+  \end{flushleft}
+  \end{minipage}
+  \begin{minipage}{0.4\textwidth}
+  \begin{flushright}
+  Stefan Knudsen \\
+  sknudsen93@gmail.com \\
+  10075761\\
+  \end{flushright}
+  \end{minipage}
+}
+\maketitle
+
+\section*{Problem 1}
+
+\begin{quote}
+  Recall that if $n$ and $m$ are nonnegative integers, then the
+  \textit{least common multiple} of $n$ and $m$, $\lcm(n, m)$, is the
+  smallest integer that is divisible by both $n$ and $m$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item What are the prime factorizations of $\lcm(n, m)$ and
+      $\gcd(n, m)$?
+    \item How large can $\lcm(n, m)$ be?
+    \item What does the answer for (a) imply about the relationship
+      between $\lcm(n, m)$ and $\gcd(n, m)$?
+    \item Prove that the functions $\lcm(n, m)$ and $\gcd(n, m)$ of
+      $n$ and $m$ are both \textit{primitive recursive} functions.
+  \end{enumerate}
+\end{quote}
+
+\section*{Answer}
+\begin{enumerate}[label=\alph*)]
+\item By definition,
+  $n = p_1^{e_1} \times p_2^{e_2} \times \cdots \times p_k^{e_k}$ and
+  $m = p_1^{f_1} \times p_2^{f_2} \times \cdots \times p_k^{f_k}$,
+  where $\forall i$, $p_i$ is a prime and $e_i, f_i \in \nat^+$.
+  Then
+  $$ 
+    \gcd(n, m) = \prod_{i=1}^k p_i^{min(e_i,f_i)} 
+    \text{ and } 
+    \lcm(n,m) = \prod_{i=1}^k p_i^{max(e_i,f_i)}
+  $$
+
+\item At most, $\lcm(n, m)$ will be $mn$ since $m|mn$ and $n|mn$.
+
+\item The product of $\lcm(n, m)$ and $\gcd(n, m)$ is always $mn$.
+
+\item First, we will prove that $\lcm(m,n)$ is primitive recursive. We
+  use an iterated product to calculate $\lcm(m,n)$.
+
+  In lecture, it was shown that if $\varphi : \nat^{k+1} \to \nat$ is
+  a primitive recursive function, then so is the iterated
+  product $$\prod_{i=0}^{X_{k+1}} \varphi(x_1,...,x_k,i)$$. We set
+  $k+1$ to max($m,n$), which is a primitive recursive function.
+
+  We let $\varphi$ be the function that raises the $i$th prime to the
+  power of max($e_i,f_i$), where $e_i,f_i$ are as defined above. As we
+  have seen in lecture, finding the $i$th prime is a recursive
+  function, and so is exponentiation, since $x^0 = 1$ and $x^{y+1} =
+  x^y \cdot x$. Now, in the exponent is the function that computes
+  max($e_i,f_i$), and we know that max is primitive recursive, as is
+  the composition of primitive recursive functions. We just need to
+  show that we can find $e_i$ and $f_i$ primitive recursively.
+
+  As we saw in lecture, for the G\"odel encoding $[\alpha_1, \alpha_1,
+    \cdots, \alpha_k] = z$, $\alpha_i = (z)_i$ is primitive recursive,
+  where $1 \leq i \leq k$ and $\alpha_i$ is the $i$th prime. So the
+  function $(x)_y$ returns the number of times that $x$ is found among
+  $y$'s prime factors. To compute max($e_i,f_i$) then, we can compute
+  max($(n)_i,(m)_i$).
+
+  %% The function g, given two numbers $x$ and $y$, returns the number
+  %% of times that $x$ is found among $y$'s prime factors. This will
+  %% allow us to compute $e_i$ and $f_i$. The predicate ``divides''
+  %% and the integer division function are primitive recursive
+  %% functions. We know this because, as shown in ``Computability,
+  %% Complexity and Languages'', $x|y$ ($x$ divides $y$) can be
+  %% expressed, using bounded minimization, as $(\exists t)_{\leq x}
+  %% (y \cdot t = x)$, and $\lfloor x / y \rfloor$ can be calculated
+  %% by min$_{t \leq x}[(t+1) \cdot y > x]$. The function $g$ composes
+  %% these functions so that $g(1,y) = 0$, $g(x,0) = 0$ (we can allow
+  %% for two base cases by making an extra function), and $g(x,y) =
+  %% x|y + (x|y * g(x,\lfloor y / x \rfloor))$.
+
+  Since all of the functions that we have used are primitive
+  recursive, their composition is also primitvive recursive and so
+  $\lcm(m,n)$ is primitive recursive. We basically replaced
+  $(z)_{t+1}$ with $max((m)_{t+1},(n)_{t+1})$ in a G\"odel encoding.
+  Our iterated sum might go too far since it goes up to max($m,n$) and
+  not $m$ or $n$'s highest prime factor, but this won't be a problem
+  since adding trailing zeros in a G\"odel encoding doesn't change
+  anything.
+
+  Now we'll compute gcd. From part b, we know that $\gcd(m,n) =
+  mn/lcm(m,n)$, where $\gcd(m,n), mn, \lcm(m,n) \in \nat$ and
+  $\lcm(m,n) | mn$. Since multiplication and the quotient function are
+  primitive recursive, we can calculate $\gcd(m,n)$ primitive
+  recursively by computing $\lfloor$ $mn / \lcm(m,n) \rfloor$.
+  However, this will be problematic when one of our numbers is 0. To
+  solve this, we could add another base case at the bottom so that
+  gcd($k,0$) = $k$. We could also compute gcd the same way we computed
+  the lcm, except with max replaced with min.
+
+\end{enumerate}
+
+\section*{Problem 2}
+
+\begin{quote}
+  Recall that the \textit{Fibonacci numbers} $F_0, F_1, F_2, ...$ are
+  defined using the following recurrence (or ``recursive definition'')
+  for every $n \ge 0$,
+  \begin{displaymath}
+    F_n = \left\{
+      \begin{array}{lr}
+        0 & \mathrm{if}\ n = 0, \\ 1 & \mathrm{if}\ n = 1, \\ F_{n-1}
+        + F_{n-2} & \mathrm{if}\ n \ge 2. \\
+      \end{array}
+    \right.
+  \end{displaymath}
+  Prove that the function $f : \nat \to \nat$ such that $f(n) = F_n$,
+  for every integer $n \ge 0$, is primitive recursive.
+\end{quote}
+
+\section*{Answer}
+
+Consider the following function $f$, where $f$ is defined as
+
+$$f(X_1) = \ell(f'(X_1))$$
+
+where $\ell$ is the left element projection of our paring function, as
+given in the lectures. Clearly $f$ is defined through composition, and
+is primitive recursive if $f'$ is primitive recursive.
+
+We'll define the function $f'$ as
+
+\begin{alignat*}{1}
+  f'(0) &= \langle 0, 1 \rangle \\ f'(t+1) &= g(t, y)
+\end{alignat*}
+
+where $y = f'(t)$ and our $g$ is defined through composition to be
+
+\begin{alignat*}{1}
+  g(X_1, X_2) &= \langle r(u^2_2(X_1, X_2)), \ell(u^2_2(X_1, X_2)) +
+  r(u^2_2(X_1, X_2)) \rangle \\ &= \langle r(X_2), \ell(X_2) + r(X_2)
+  \rangle
+\end{alignat*}
+
+Since this is a direct application of the composition and primitive
+recursive schemes, $f'$, and therefore $f$, are primitive recursive.
+
+% Finally coming up with the exact way to state this to match our
+% exact definitions of composition and primitive recursion took me
+% *way* too long. :(
+
+Now all that remains is to prove that $f(n) = F_n$, for all $n \ge 0$,
+which we'll do by strong induction.
+
+\subsection*{Base Cases}
+
+We want to show that $f(n) = F_n$, for $n \in {0, 1}$ as our base cases.
+
+\subsubsection*{Base Case 1: $f(0) = F_0$}
+
+Directly from the definition of $F_n$, we have that $F_0 = 0$.  
+
+From the definition of $f$, we have that
+$f(0) = \ell(f'(0)) = \ell(\langle 0, 1\rangle) = 0$. So we know that
+$f(0) = F_0$.
+
+\subsubsection*{Base Case 2: $f(1) = F_1$}
+
+Again, we get that $F_1 = 1$ directly from the definition of $F_n$.
+
+Computing $f(1)$ takes a bit more effort.
+
+\begin{alignat*}{1}
+  f(1) &= \ell(f'(1)) \\
+       &= \ell(g(0, f'(0)) \\
+       &= \ell(g(0, \langle 0, 1 \rangle) \\
+       &= \ell(\langle 
+                 r(\langle 0, 1 \rangle), 
+                 \ell(\langle 0, 1 \rangle) + r(\langle 0, 1 \rangle) 
+               \rangle) \\
+       &= \ell(\langle 1, 0 + 1 \rangle) \\
+       &= 1
+\end{alignat*}
+
+But we can see that $f(1) = 1 = F_1$, which is what we wanted for this
+base case.
+
+\subsection*{Induction Step}
+
+Let $k$ be an arbitrarily chosen integer such that $k > 1$. Using our
+\textit{inductive hypothesis} that $f(i) = F_i$ for all
+$0 \le i \le k$, we wish to show that $f(k+1) = F_{k+1}$.
+
+First, we know that $F_{k+1} = F_{k} + F_{k-1} = f(k) + f(k-1)$ from
+the definition of $F$ and our hypothesis. We'll try to manipulate
+$f(k+1)$ to this form to show they're equivalent.
+
+\begin{alignat}{1}
+  f(k+1) &= \ell(f'(k+1)) \\
+         &= \ell(g(k, f'(k))) \\
+         &= \ell(\langle r(f'(k)), \ell(f'(k)) + r(f'(k)) \rangle)\\
+         &= r(f'(k)) \\
+         &= r(g(k-1, f'(k-1))) \\ 
+         &= r( \langle r(f'(k-1)), \ell(f'(k-1)) + r(f'(k-1)) \rangle )\\
+         &= \ell(f'(k-1)) + r(f'(k-1)) \\
+         &= f(k-1) + r(f'(k-1)) \\ % \ell(f'(n)) == f(n) by def.
+         &= f(k-1) + f(k) \\       % since f(k+1) == r(f'(k)), from above.
+         &= f(k) + f(k-1)          % commutataive.
+\end{alignat}
+
+Which is exactly what we wanted. I think I need to explain a bit,
+though, since the above is basically a wall of symbols. Most of the
+work is just expanding on definitions. In step 3, we just evaluate the
+outermost $\ell$, and in step 6 we're evaluating the outermost $r$. We
+then simplify the terms, first using the definition of $f$ to simplify
+the left term, and then using the previous result in this calculation
+that $f(k+1) = r(f'(k)$, i.e. that $r(f'(k-1) = f(k)$, to simplify the
+right hand of the addition. We then flip them around to get exactly
+what we wanted, since addition if commutative.
+
+So, by strong induction, we know that for all $k > 0$, $f(k) = F_k$.
+We also have our previous result that $f$ is primitive
+recursive. These are what we wanted.
+
+\end{document}
